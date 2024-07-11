@@ -7,22 +7,26 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 # Настройка доступа к Google Sheets
 scopes = [
     'https://spreadsheets.google.com/feeds'
 ]
 creds = Credentials.from_service_account_file('./api/secrets.json', scopes=scopes)
 client = gspread.authorize(creds)
-sheet_id = "11og1HDSYE4EM1tr1eNR0znW3dUqHp8Yp5OzffutkSZc"
+sheet_id = os.environ.get('SHEET_ID')
 
 # Настройка модели Gemini
 genai.configure(api_key="")
 model = genai.GenerativeModel('gemini-1.5-flash')
 
 # Настройка уведомления ментора
-MENTOR_EMAIL = 'zhkainazarov@gmail.com'
-SENDER_EMAIL = 'kdamir2004@gmail.com'
-SENDER_PASSWORD = ''
+MENTOR_EMAIL =    os.environ.get("MENTOR_EMAIL")
+SENDER_EMAIL =    os.environ.get("SENDER_EMAIL")
+SENDER_PASSWORD = os.environ.get("SENDER_PASSWORD")
 
 def notify_mentor(applicant, summary):
     subject = f"Review Required: {applicant['ФИО']}"
