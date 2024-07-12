@@ -97,22 +97,26 @@ def query(system, specs, owner, repo, branch):
         code_block = "".join(obj["code"])
         code_blocks.append(code_block)
         print(code_block)
-        
+
     return code_blocks
 
 
-def search(search_query, owner, repo, branch):
+def search(search_query, own_repo, branch, repo_list):
     url = f"{BASE_URL}/search"
+
+    repositories = []
+
+    for repo in repo_list:
+        if repo[19:] != own_repo[19:]:    
+            repositories.append({
+                "remote": "github",
+                "branch": branch,
+                "repository": repo[19:]
+            })
 
     payload = {
         "query": search_query,
-        "repositories": [
-            {
-                "remote": "github",
-                "branch": branch,
-                "repository": f"{owner}/{repo}"
-            }
-        ],
+        "repositories": repositories,
         "sessionId": "<string>",
         "stream": True
     }
@@ -178,3 +182,5 @@ if __name__ == '__main__':
 
 
     # search(search_query, **project)
+
+

@@ -75,38 +75,44 @@ specification = """
         - Use the API to get information about the movies
     """
 
-def search_by_chunks(search_query, chunk_size=100):
-    current = 0
-    if len(search_query) < 150:
-        chunk = search_query
-        res = gh_search.code_search(chunk)
-        print(res)
-        print("\n"*5)
-        return
+# def search_by_chunks(search_query, chunk_size=100):
+#     current = 0
+#     if len(search_query) < 150:
+#         chunk = search_query
+#         res = gh_search.code_search(chunk)
+#         print(res)
+#         print("\n"*5)
+#         return
 
 
-    while current < len(search_query):
-        x = random.randint(5, 20)
-        if current + chunk_size + x < len(search_query):
-            chunk = search_query[current:current+chunk_size].replace("\n", "+").replace(" ", "+")
-            print(chunk)
-            current += chunk_size + x
+#     while current < len(search_query):
+#         x = random.randint(5, 20)
+#         if current + chunk_size + x < len(search_query):
+#             chunk = search_query[current:current+chunk_size].replace("\n", "+").replace(" ", "+")
+#             print(chunk)
+#             current += chunk_size + x
 
-            res = gh_search.code_search(chunk)
-            print(res)
-            print("\n"*5)
-        break
+#             res = gh_search.code_search(chunk)
+#             print(res)
+#             print("\n"*5)
+#         break
+
+
+# def check_cheating(system, specs, owner, repo, branch):
+#     key_points = greptile.query(system, specs, owner, repo, branch)
+
+#     for i, point in enumerate(key_points):
+#         search_by_chunks(point)
+#         print(f"Point {i} checked: ")
 
 
 def check_cheating(system, specs, owner, repo, branch):
     key_points = greptile.query(system, specs, owner, repo, branch)
-
     for i, point in enumerate(key_points):
-        search_by_chunks(point)
+        greptile.search(point, )
         print(f"Point {i} checked: ")
-
-
-
+        print(point)
+        print("\n"*5)
 
 if __name__ == "__main__":
     # branch = "master"
