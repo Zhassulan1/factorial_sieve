@@ -1,7 +1,9 @@
+import json
 import requests
 import secrets
 import os
 from dotenv import load_dotenv
+import re
 
 load_dotenv()
 
@@ -49,23 +51,23 @@ def check_indexing_progress(owner, repo, branch):
 
     response = requests.get(url, headers=headers)
     print(response.json())
+    return response.json()
 
 
-
-def query(specs, owner, repo, branch):
+def query(system, specs, owner, repo, branch):
     url = f'{BASE_URL}/query'
 
     sessionId = make_token()
     # sessionId = "pJ1bn3l2Vvo7YpJwT8oYZ3Tk1TnQ7ha8MtZkLg0ltYs" 
-    print()
-    print(sessionId)
-    print()
+    # print()
+    # print(sessionId)
+    # print()
 
     payload = {
         "messages": [
             {
                 "id": "id-1",
-                "content": f"{SYSTEM_PROMPT}",
+                "content": f"{system}",
                 "role": "system"
             },
             {
@@ -85,7 +87,18 @@ def query(specs, owner, repo, branch):
     }
 
     response = requests.post(url, json=payload, headers=headers)
-    print(response.json()["message"]) 
+    # print(response.json()["message"]) 
+
+    res = json.loads(response.json()["message"][7:-3])
+
+    code_blocks = []
+    for obj in res:
+        print(obj["code"])
+        code_block = "".join(obj["code"])
+        code_blocks.append(code_block)
+        print(code_block)
+        
+    return code_blocks
 
 
 def search(search_query, owner, repo, branch):
@@ -103,15 +116,10 @@ def search(search_query, owner, repo, branch):
         "sessionId": "<string>",
         "stream": True
     }
-    headers = {
-        "Authorization": "Bearer bthyHo5NLX8rZ9FdnFs1zNZtpdsmfflxeSxCkX6BSBg4zUTO",
-        "X-GitHub-Token": "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",
-        "Content-Type": "application/json"
-    }
 
     response = requests.request("POST", url, json=payload, headers=headers)
 
-    print(response.text)
+    return response.json()
 
 
 
@@ -138,6 +146,35 @@ if __name__ == '__main__':
 
     # index_repos(**project)
     # check_indexing_progress(**project)
-    # query(specification, **project)
-    search_query = "Code realted to fetching data from a remote API"
-    search(search_query, **project)
+    search_query = """
+        Find code blocks related to key points of tasks realization. 
+        Find only key points of code. 
+        And this key points should be related to given task criteria.
+        If there is many code blocks are related to one key point,
+        and are placed next to each other,
+        then, you should join them into one code block.
+        Give citations in the following format:
+
+        ```json
+        [
+            {
+                "purpose": "purpose of code block",
+                "code": "code block"
+            },
+            {
+                "purpose": "purpose of code block",
+                "code": "code block"
+            },
+            .....    
+        ]
+        Do not add any other fields. 
+        You should only give code citations from codebase. 
+        Do not add any extra characters.
+        Give the result in JSON format. 
+        ```
+    """
+
+    query(search_query, specification, **project)
+
+
+    # search(search_query, **project)
