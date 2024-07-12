@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 import json
 
-import greptile
+import github.greptile
 import github.gh_search as gh_search
 
 

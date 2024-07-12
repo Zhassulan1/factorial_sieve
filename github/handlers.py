@@ -1,6 +1,6 @@
 import os
-import greptile as greptile
-import gh_search as gh_search
+import github.greptile as greptile
+import github.gh_search as gh_search
 import random
 
 # FIND_KEY_POINTS = """
