@@ -106,8 +106,8 @@ def submit_to_dolos(name, zipfile_path):
    return res["html_url"]
 
 
-def check_cheating(system, specs, owner, repo, branch):
-    key_points = greptile.query(system, specs, owner, repo, branch)
+def check_cheating(specs, owner, repo, branch):
+    key_points = greptile.query(specs, owner, repo, branch)
     print(key_points)
     text = " ".join(key_points)
 
