@@ -39,7 +39,7 @@ def index_repos(owner, repo, branch):
         "repository": f"{owner}/{repo}",
         "branch": branch
     }
-
+    print(payload)
     response = requests.post(url, json=payload, headers=headers)
     print(response.json())
 
@@ -104,18 +104,23 @@ def query(system, specs, owner, repo, branch):
 def search(search_query, own_repo, branch, repo_list):
     url = f"{BASE_URL}/search"
 
+    query = """
+        Find any code that is same as given below code.
+    """
+
+
     repositories = []
 
     for repo in repo_list:
         if repo[19:] != own_repo[19:]:    
             repositories.append({
                 "remote": "github",
-                "branch": branch,
+                "branch": "main",
                 "repository": repo[19:]
             })
 
     payload = {
-        "query": search_query,
+        "query": query + search_query,
         "repositories": repositories,
         "sessionId": "<string>",
         "stream": True
@@ -184,3 +189,39 @@ if __name__ == '__main__':
     # search(search_query, **project)
 
 
+
+
+
+# def query(system, specs, owner, repo, branch):
+#     url = f'{BASE_URL}/query'
+
+#     sessionId = make_token()
+
+#     payload = {
+#         "messages": [
+#             {
+#                 "id": "id-1",
+#                 "content": f"{system}",
+#                 "role": "system"
+#             },
+#             {
+#                 "id": "id-2",
+#                 "content": f"Specifications {specs}",
+#                 "role": "user"
+#             }
+#         ],
+#         "repositories": [
+#             {
+#                 "remote": "github",
+#                 "repository": f"{owner}/{repo}",
+#                 "branch": branch
+#             }
+#         ],
+#         "sessionId": sessionId
+#     }
+
+#     response = requests.post(url, json=payload, headers=headers)
+#     # print(response.json()["message"]) 
+
+#     res = json.loads(response.json()["message"][7:-3])
+#     re

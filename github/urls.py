@@ -5,5 +5,5 @@ from github.views import check_cheating
 
 urlpatterns = [
     path('/', check),
-    path('check_cheating/', check_cheating),
+    path('check_cheating', check_cheating),
 ]
