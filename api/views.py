@@ -7,7 +7,6 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from datetime import datetime
-import re
 
 # Настройка доступа к Google Sheets
 scopes = [
@@ -19,13 +18,13 @@ client = gspread.authorize(creds)
 sheet_id = "11og1HDSYE4EM1tr1eNR0znW3dUqHp8Yp5OzffutkSZc"
 
 # Настройка модели Gemini
-genai.configure(api_key="")
+genai.configure(api_key="AIzaSyBBuruMdnZYU6r-cf7mQqM2O0qRZCyh_34")
 model = genai.GenerativeModel('gemini-1.5-flash')
 
 # Настройка уведомления ментора
 MENTOR_EMAIL = 'zhkainazarov@gmail.com'
 SENDER_EMAIL = 'kdamir2004@gmail.com'
-SENDER_PASSWORD = ''
+SENDER_PASSWORD = 'aaoxjilpebmbqxel'
 
 def notify_mentor(applicant, summary):
     subject = f"Review Required: {applicant['ФИО']}"
@@ -133,7 +132,6 @@ def create_prompt(applicant):
     """
 
     return prompt
-
 # Функция для оценки кандидатов
 def evaluate_applicants(request):
     sheet = client.open_by_key(sheet_id)
@@ -152,12 +150,17 @@ def evaluate_applicants(request):
         response = model.generate_content(prompt)
         text = response.text
 
-        # Extract the summary and verdict using regex
-        verdict_match = re.search(r"Verdict:\s*(Pass|Fail|50/50)", text)
-        summary_match = re.search(r"Summary:\s*(.*)", text, re.DOTALL)
+        verdict = "50/50"
+        summary = "No summary available."
+        if "Pass" in text:
+            verdict = "Pass"
+        elif "Fail" in text:
+            verdict = "Fail"
 
-        verdict = verdict_match.group(1) if verdict_match else "50/50"
-        summary = summary_match.group(1).strip() if summary_match else "No summary available."
+        for line in text.split('\n'):
+            if "summary:" in line:
+                summary = line.split("summary:")[1].strip()
+                break
 
         if verdict in ['Pass', 'Fail']:
             worksheet.update_cell(index, 20, verdict)
@@ -187,5 +190,4 @@ def notify_all_applicants(request):
         if email and verdict:
             notify_applicant(email, verdict)
 
-    return JsonResponse({'status': 'Notifications sent to all applicants'})
-
+    return JsonResponse({'status': 'success', 'message': 'Notifications sent to all applicants'})
