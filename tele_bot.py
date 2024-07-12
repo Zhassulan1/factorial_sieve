@@ -1,6 +1,8 @@
 import logging
 import telebot
 import requests
+import time
+from requests.exceptions import ReadTimeout
 
 # Настройка логирования
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -14,8 +16,13 @@ bot = telebot.TeleBot(API_TOKEN)
 @bot.message_handler(commands=['start'])
 def start(message):
     markup = telebot.types.InlineKeyboardMarkup()
-    markup.row(telebot.types.InlineKeyboardButton("Evaluate Applicants", callback_data='evaluate'))
-    markup.row(telebot.types.InlineKeyboardButton("Notify Applicants", callback_data='notify'))
+    markup.row(
+        telebot.types.InlineKeyboardButton("Evaluate Applicants", callback_data='evaluate'),
+        telebot.types.InlineKeyboardButton("Notify Applicants", callback_data='notify')
+    )
+    # Add a button for Google Sheets link
+    markup.row(telebot.types.InlineKeyboardButton("Google Sheets", url='https://docs.google.com/spreadsheets/d/11og1HDSYE4EM1tr1eNR0znW3dUqHp8Yp5OzffutkSZc/edit?resourcekey=&gid=226184587#gid=226184587'))
+    
     bot.send_message(message.chat.id, 'Please choose an action:', reply_markup=markup)
 
 # Обработчик кнопок
@@ -58,5 +65,14 @@ def handle_message(message):
         logger.error(f'Request error: {e}')
         bot.reply_to(message, 'Error occurred while processing your request.')
 
-# Запуск бота
-bot.polling(none_stop=True, timeout=60)
+# Function to handle polling with retry logic
+def start_polling(bot, timeout):
+    while True:
+        try:
+            bot.polling(none_stop=True, timeout=timeout)
+        except ReadTimeout:
+            logger.error('Read timeout error, retrying in 5 seconds...')
+            time.sleep(5)  # wait before retrying
+
+# Запуск бота с увеличенным таймаутом и логикой повторной попытки
+start_polling(bot, timeout=120)
