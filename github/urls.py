@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path
 from github.views import check
 
 from github.views import check_cheating, check_requirements

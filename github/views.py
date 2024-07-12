@@ -38,7 +38,7 @@ def check_cheating(request):
         
         is_indexed = handlers.check_index(owner, repo, branch)
         if not is_indexed:
-            return JsonResponse({'Indexing': 'Repository is currently being indexed, it will '}, status=200)
+            return JsonResponse({'Indexing': 'Repository is currently being indexed, it will take some time'}, status=200)
         
         result = handlers.check_cheating(task_criteria, owner, repo, branch)
         return JsonResponse({'results': result})
@@ -48,7 +48,7 @@ def check_cheating(request):
         return JsonResponse({'error': 'Invalid method'}, status=400)
 
 
-
+@csrf_exempt
 def check_requirements(request):
     if request.method == 'POST':
         try:
@@ -77,7 +77,7 @@ def check_requirements(request):
         
         is_indexed = handlers.check_index(owner, repo, branch)
         if not is_indexed:
-            return JsonResponse({'Indexing': 'Repository is currently being indexed, it will '}, status=200)
+            return JsonResponse({'Indexing': 'Repository is currently being indexed, it will take some time'}, status=200)
         
         result = greptile.check_requirments(task_criteria, owner, repo, branch)
         return JsonResponse({'results': result})

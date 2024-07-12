@@ -65,9 +65,9 @@ def create_zip(name, text):
     tmp_file_path2 = os.path.join(PROJ_DIR, "_tmp_file_2.ts")
     
     # Write each part to a separate temporary file
-    with open(tmp_file_path1, "w+") as f1:
+    with open(tmp_file_path1, "w+", encoding='utf-8') as f1:
         f1.write(part1)
-    with open(tmp_file_path2, "w+") as f2:
+    with open(tmp_file_path2, "w+", encoding='utf-8') as f2:
         f2.write(part2)
     
     # Create the ZIP file
