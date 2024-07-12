@@ -4,41 +4,9 @@ import github.greptile as greptile
 import requests
 import zipfile
 import os
-<<<<<<< HEAD
-=======
 import github.greptile as greptile
 import github.gh_search as gh_search
 import random
-
-# FIND_KEY_POINTS = """
-#         Find code blocks related to key points of tasks realization. 
-#         Find only key points of code. 
-#         And this key points should be related to given task criteria.
-#         If there is many code blocks are related to one key point,
-#         and are placed next to each other,
-#         then, you should join them into one code block.
-#         Give citations in the following format:
-
-#         ```json
-#         [
-#             {
-#                 'purpose': 'purpose of code block',
-#                 'code': 'code block'
-#             },
-#             {
-#                 'purpose': 'purpose of code block',
-#                 'code': 'code block'
-#             },
-#             .....    
-#         ]
-#         Do not add any other fields. 
-#         You should only give code citations from codebase. 
-#         Do not add any extra characters.
-#         Give the result in JSON format. 
-#         ```
-#     """
-
->>>>>>> ebf4fe688c2656dc05e22e3d30abdd2b6acb1363
 
 
 FIND_KEY_POINTS = """
